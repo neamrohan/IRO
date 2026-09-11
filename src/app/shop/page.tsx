@@ -31,10 +31,10 @@ export default async function ShopPage({ searchParams }: PageProps) {
       <h1 className="font-display text-3xl mb-2">Shop All</h1>
       <p className="text-sm text-ink/60 mb-8">{products.length} products</p>
 
-      <div className="flex gap-10">
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
         <ProductFilters categories={categories} />
 
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           {products.length === 0 ? (
             <div className="border hairline py-20 text-center">
               <p className="text-ink/60 mb-2">No products match your filters.</p>
