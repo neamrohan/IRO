@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: "Newsreader", serif;
+  --font-sans: "Inter", sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+body { background-color: #F7F3EC; color: #1C1815; }
+::selection { background-color: #6E1F2B; color: #F7F3EC; }
+.hairline { border-color: #E4DCCB; }
+:focus-visible { outline: 2px solid #6E1F2B; outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
