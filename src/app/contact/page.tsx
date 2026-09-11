@@ -31,7 +31,7 @@ export default function ContactPage() {
             <Phone size={18} className="mt-0.5 text-oxblood shrink-0" />
             <div>
               <p className="font-medium text-sm">Phone</p>
-              <p className="text-sm text-ink/60">+880 1XXX-XXXXXX (10am–8pm, Sat–Thu)</p>
+              <p className="text-sm text-ink/60">+8801946698808 (10am–8pm, Sat–Thu)</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
@@ -45,7 +45,7 @@ export default function ContactPage() {
             <MapPin size={18} className="mt-0.5 text-oxblood shrink-0" />
             <div>
               <p className="font-medium text-sm">Studio</p>
-              <p className="text-sm text-ink/60">Gulshan, Dhaka, Bangladesh</p>
+              <p className="text-sm text-ink/60">Mirpur, Dhaka, Bangladesh</p>
             </div>
           </div>
         </div>
