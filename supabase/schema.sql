@@ -55,12 +55,32 @@ create table if not exists public.categories (
   id uuid primary key default uuid_generate_v4(),
   name text not null,
   slug text not null unique,
+  parent_id uuid references public.categories(id) on delete set null,
   description text,
   image_url text,
   sort_order int not null default 0,
   is_active boolean not null default true,
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
 );
+
+alter table public.categories add column if not exists parent_id uuid references public.categories(id) on delete set null;
+alter table public.categories add column if not exists updated_at timestamptz not null default now();
+create index if not exists idx_categories_parent on public.categories(parent_id);
+create index if not exists idx_categories_active_order on public.categories(is_active, sort_order);
+
+create or replace function public.set_category_updated_at()
+returns trigger as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$ language plpgsql;
+
+drop trigger if exists categories_set_updated_at on public.categories;
+create trigger categories_set_updated_at
+  before update on public.categories
+  for each row execute procedure public.set_category_updated_at();
 
 -- ─────────────────────────────────────────────────────────────────────────
 -- PRODUCTS
@@ -376,9 +396,9 @@ drop policy if exists "profiles_update_own" on public.profiles;
 create policy "profiles_update_own" on public.profiles
   for update using (auth.uid() = id);
 
--- CATEGORIES: public read; admin write
+-- CATEGORIES: customers can read active categories; admins can manage all
 drop policy if exists "categories_public_read" on public.categories;
-create policy "categories_public_read" on public.categories for select using (true);
+create policy "categories_public_read" on public.categories for select using (is_active = true or public.is_admin());
 drop policy if exists "categories_admin_write" on public.categories;
 create policy "categories_admin_write" on public.categories for all using (public.is_admin()) with check (public.is_admin());
 

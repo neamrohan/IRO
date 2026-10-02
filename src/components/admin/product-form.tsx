@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ImageUploader, type UploadedImage } from "@/components/admin/image-uploader";
 import { saveProduct } from "@/app/admin/products/actions";
+import { getCategoryLabel } from "@/lib/categories";
 import type { Product, Category } from "@/lib/types";
 
 interface ProductFormProps {
@@ -108,7 +109,8 @@ export function ProductForm({ categories, product }: ProductFormProps) {
         <div>
           <label className="text-xs text-ink/50 mb-1 block">Category</label>
           <select value={form.categoryId} onChange={(e) => setForm({ ...form, categoryId: e.target.value })} className="w-full border hairline px-3 py-2.5 text-sm">
-            {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+            <option value="">Uncategorized</option>
+            {categories.map((c) => <option key={c.id} value={c.id}>{getCategoryLabel(c, categories)}</option>)}
           </select>
         </div>
         <div>

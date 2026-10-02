@@ -4,6 +4,8 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useState } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getCategoryLabel } from "@/lib/categories";
+import type { Category } from "@/lib/types";
 
 const COLORS = ["Maroon", "Ivory", "Sage", "White", "Black", "Beige", "Emerald", "Navy", "Rust", "Sky Blue", "Gold"];
 const SIZES = ["S", "M", "L", "XL", "XXL"];
@@ -17,7 +19,7 @@ const SORT_OPTIONS = [
   { value: "popularity", label: "Most Popular" },
 ];
 
-export function ProductFilters({ categories }: { categories: { name: string; slug: string }[] }) {
+export function ProductFilters({ categories }: { categories: Category[] }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -66,7 +68,7 @@ export function ProductFilters({ categories }: { categories: { name: string; slu
                 onChange={() => updateParam("category", cat.slug)}
                 className="accent-oxblood"
               />
-              {cat.name}
+              {getCategoryLabel(cat, categories)}
             </label>
           ))}
           {activeCategory && (

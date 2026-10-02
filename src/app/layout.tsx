@@ -5,6 +5,7 @@ import { CartProvider } from "@/lib/cart-context";
 import { Toaster } from "sonner";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { getCategories } from "@/lib/data/products";
 
 const displayFont = Newsreader({
   subsets: ["latin"],
@@ -36,14 +37,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const categories = await getCategories();
+
   return (
     <html lang="en" className={`${displayFont.variable} ${sansFont.variable}`}>
       <body className="font-sans antialiased flex min-h-screen flex-col">
         <CartProvider>
-          <SiteHeader />
+          <SiteHeader categories={categories} />
           <main className="flex-1">{children}</main>
-          <SiteFooter />
+          <SiteFooter categories={categories} />
           <Toaster position="top-center" richColors />
         </CartProvider>
       </body>

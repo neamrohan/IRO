@@ -52,6 +52,7 @@ netlify.toml, .env.example
 
 1. Go to [supabase.com](https://supabase.com) → New Project. Note your project's **Project URL** and **anon public key** (Project Settings → API).
 2. Open the SQL Editor → New Query, paste the entire contents of `supabase/schema.sql`, and run it. This creates all tables, RLS policies, triggers, functions, and 6 seed products.
+  - For an existing IRO database, run `supabase/migrations/20261002_categories_hierarchy.sql` in the SQL Editor to add category hierarchy without removing existing product assignments.
 3. **Create the Storage bucket** for product images:
    - Go to Storage → New Bucket → name it exactly `product-images` → toggle **Public bucket** on.
    - Under that bucket's Policies, add a policy allowing `INSERT`/`UPDATE`/`DELETE` for authenticated users with `role = 'admin'` (or simplest for testing: allow all authenticated inserts, since the admin UI is already gated by middleware). Public `SELECT` is required so product images load on the storefront.
@@ -110,6 +111,7 @@ There are no seeded auth users (Supabase Auth users can't be created via SQL see
 - [ ] Register an account, confirm a row appears in `profiles`
 - [ ] Promote it to `admin`, confirm `/admin` loads (non-admins should be redirected)
 - [ ] Add a product with images from `/admin/products/new`
+- [ ] Create a category and subcategory from `/admin/categories`, then assign a product and verify its `/shop/...` URL
 - [ ] Add it to cart as a guest (not logged in) — refresh the page, confirm it persists (localStorage)
 - [ ] Log in — confirm the cart merges/loads from the database
 - [ ] Apply a coupon created in `/admin/coupons`

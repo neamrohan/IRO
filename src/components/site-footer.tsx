@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { Instagram, Facebook } from "lucide-react";
 import { NewsletterForm } from "@/components/newsletter-form";
+import { getCategoryHref } from "@/lib/categories";
+import type { Category } from "@/lib/types";
 
-export function SiteFooter() {
+export function SiteFooter({ categories }: { categories: Category[] }) {
   return (
     <footer className="bg-ink text-cream/90 mt-24">
       <div className="mx-auto max-w-content px-4 sm:px-6 lg:px-8 py-16">
@@ -27,7 +29,9 @@ export function SiteFooter() {
             <h3 className="text-sm font-medium mb-4">Shop</h3>
             <ul className="space-y-2.5 text-sm text-cream/60">
               <li><Link href="/shop" className="hover:text-cream">All Products</Link></li>
-              <li><Link href="/three-piece" className="hover:text-cream">Three-Piece</Link></li>
+              {categories.filter((category) => !category.parent_id).map((category) => (
+                <li key={category.id}><Link href={getCategoryHref(category, categories)} className="hover:text-cream">{category.name}</Link></li>
+              ))}
               <li><Link href="/new-arrivals" className="hover:text-cream">New Arrivals</Link></li>
               <li><Link href="/best-sellers" className="hover:text-cream">Best Sellers</Link></li>
             </ul>

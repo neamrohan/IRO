@@ -4,6 +4,7 @@ import { ArrowRight, Star } from "lucide-react";
 import { getProducts, getCategories } from "@/lib/data/products";
 import { ProductCard } from "@/components/product-card";
 import { NewsletterForm } from "@/components/newsletter-form";
+import { getCategoryHref } from "@/lib/categories";
 
 export const revalidate = 60;
 
@@ -32,7 +33,7 @@ export default async function HomePage() {
               real days, delivered across Bangladesh.
             </p>
             <Link
-              href="/three-piece"
+              href="/shop"
               className="inline-flex items-center gap-2 bg-cream text-ink px-6 py-3.5 text-sm font-medium hover:bg-cream/90 transition-colors"
             >
               Shop Collection <ArrowRight size={16} />
@@ -59,8 +60,8 @@ export default async function HomePage() {
           </Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          {categories.map((cat) => (
-            <Link key={cat.id} href={`/shop?category=${cat.slug}`} className="group">
+          {categories.filter((cat) => !cat.parent_id).map((cat) => (
+            <Link key={cat.id} href={getCategoryHref(cat, categories)} className="group">
               <div className="relative aspect-square bg-line/40 overflow-hidden mb-3">
                 {cat.image_url ? (
                   <Image src={cat.image_url} alt={cat.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />

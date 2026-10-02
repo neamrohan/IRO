@@ -73,7 +73,7 @@ export default async function ProductDetailsPage({ params }: PageProps) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <nav className="text-xs text-ink/50 mb-6">
-        <span>Shop</span> / <span>{product.categories?.name ?? "Three-Piece"}</span> / <span className="text-ink">{product.name}</span>
+        <span>Shop</span> / <span>{product.categories?.name ?? "Uncategorized"}</span> / <span className="text-ink">{product.name}</span>
       </nav>
 
       <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">

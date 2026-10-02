@@ -31,14 +31,14 @@ export default function ContactPage() {
             <Phone size={18} className="mt-0.5 text-oxblood shrink-0" />
             <div>
               <p className="font-medium text-sm">Phone</p>
-              <p className="text-sm text-ink/60">+8801946698808 (10am–8pm, Sat–Thu)</p>
+              <p className="text-sm text-ink/60">01895643538 (10am–12pm, Sat–Fri)</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <Mail size={18} className="mt-0.5 text-oxblood shrink-0" />
             <div>
               <p className="font-medium text-sm">Email</p>
-              <p className="text-sm text-ink/60">support@iro.com.bd</p>
+              <p className="text-sm text-ink/60">iro26202620@gmail.com</p>
             </div>
           </div>
           <div className="flex items-start gap-3">

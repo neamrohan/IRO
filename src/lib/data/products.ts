@@ -13,6 +13,7 @@ function hasSupabaseConfig() {
 
 export interface ProductFilters {
   categorySlug?: string;
+  categoryId?: string;
   search?: string;
   minPrice?: number;
   maxPrice?: number;
@@ -32,13 +33,35 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
   const supabase = await createClient();
   let query = supabase.from("products").select(PRODUCT_SELECT).eq("is_active", true);
 
-  if (filters.categorySlug) {
-    const { data: cat } = await supabase
+  if (filters.categorySlug || filters.categoryId) {
+    let categoryId = filters.categoryId;
+    if (!categoryId && filters.categorySlug) {
+      const { data: category } = await supabase
+        .from("categories")
+        .select("id")
+        .eq("slug", filters.categorySlug)
+        .eq("is_active", true)
+        .maybeSingle();
+      categoryId = category?.id;
+    }
+    if (!categoryId) return [];
+
+    const { data: categories } = await supabase
       .from("categories")
-      .select("id")
-      .eq("slug", filters.categorySlug)
-      .maybeSingle();
-    if (cat) query = query.eq("category_id", cat.id);
+      .select("id, parent_id")
+      .eq("is_active", true);
+    const descendantIds = new Set([categoryId]);
+    let addedDescendant = true;
+    while (addedDescendant) {
+      addedDescendant = false;
+      for (const category of categories ?? []) {
+        if (category.parent_id && descendantIds.has(category.parent_id) && !descendantIds.has(category.id)) {
+          descendantIds.add(category.id);
+          addedDescendant = true;
+        }
+      }
+    }
+    query = query.in("category_id", [...descendantIds]);
   }
 
   if (filters.search) {
@@ -130,5 +153,32 @@ export async function getCategories() {
     console.error("getCategories error:", error.message);
     return [];
   }
-  return data ?? [];
+  const categories = data ?? [];
+  const byId = new Map(categories.map((category) => [category.id, category]));
+  return categories.filter((category) => {
+    let parentId = category.parent_id;
+    const visited = new Set([category.id]);
+    while (parentId) {
+      if (visited.has(parentId)) return false;
+      visited.add(parentId);
+      const parent = byId.get(parentId);
+      if (!parent) return false;
+      parentId = parent.parent_id;
+    }
+    return true;
+  });
+}
+
+export async function getCategoryByPath(slugs: string[]) {
+  if (!slugs.length) return null;
+  const categories = await getCategories();
+  let parentId: string | null = null;
+  let selected = null as (typeof categories)[number] | null;
+
+  for (const slug of slugs) {
+    selected = categories.find((category) => category.slug === slug && category.parent_id === parentId) ?? null;
+    if (!selected) return null;
+    parentId = selected.id;
+  }
+  return selected;
 }
