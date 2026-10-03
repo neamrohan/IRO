@@ -4,16 +4,19 @@ import { ArrowRight, Star } from "lucide-react";
 import { getProducts, getCategories } from "@/lib/data/products";
 import { ProductCard } from "@/components/product-card";
 import { NewsletterForm } from "@/components/newsletter-form";
+import { HomeHeroGallery } from "@/components/home-hero-gallery";
 import { getCategoryHref } from "@/lib/categories";
+import { getHeroSlides } from "@/lib/data/hero-slides";
 
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [featured, newArrivals, bestSellers, categories] = await Promise.all([
+  const [featured, newArrivals, bestSellers, categories, heroSlides] = await Promise.all([
     getProducts({ featured: true, limit: 4 }),
     getProducts({ newArrival: true, limit: 4 }),
     getProducts({ bestSeller: true, limit: 4 }),
     getCategories(),
+    getHeroSlides(),
   ]);
 
   return (
@@ -22,31 +25,25 @@ export default async function HomePage() {
       <section className="relative bg-ink text-cream overflow-hidden">
         <div className="mx-auto max-w-content px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-8 items-center min-h-[560px] py-16">
           <div className="order-2 lg:order-1">
-            <p className="text-sand text-sm tracking-wide mb-4">The 2026 Collection</p>
+            <p className="text-sand text-sm tracking-wide mb-4">The IRO Collection</p>
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-6">
-              Three-piece,
+              Everyday pieces,
               <br />
-              made to be worn often.
+              elevated.
             </h1>
             <p className="text-cream/70 max-w-md mb-8 leading-relaxed">
-              Cotton, print, and hand embroidery — considered fabrics cut for
-              real days, delivered across Bangladesh.
+              From elegant three-pieces and effortless dresses to statement bags —
+              discover styles made for every moment.
             </p>
             <Link
               href="/shop"
               className="inline-flex items-center gap-2 bg-cream text-ink px-6 py-3.5 text-sm font-medium hover:bg-cream/90 transition-colors"
             >
-              Shop Collection <ArrowRight size={16} />
+              Discover the Collection <ArrowRight size={16} />
             </Link>
           </div>
           <div className="order-1 lg:order-2 relative aspect-[4/5] lg:aspect-auto lg:h-[560px]">
-           <Image
-  src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=1200&q=90"
-  alt="IRO premium three-piece collection"
-  fill
-  priority
-  className="object-cover"
-/>
+            <HomeHeroGallery photos={heroSlides} />
           </div>
         </div>
       </section>
@@ -150,25 +147,6 @@ export default async function HomePage() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Instagram-style gallery */}
-      <section className="mx-auto max-w-content px-4 sm:px-6 lg:px-8 py-20">
-        <h2 className="font-display text-2xl sm:text-3xl mb-8 text-center">@iro.bd</h2>
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
-          {[
-            "photo-1583391733956-6c78276477e2",
-            "photo-1594633312681-425c7b97ccd1",
-            "photo-1618932260643-eee4a2f652a6",
-            "photo-1610030181087-540f5b6c1c7c",
-            "photo-1591369822096-ffd140ec948f",
-            "photo-1583744946564-b52d01a7b321",
-          ].map((id) => (
-            <div key={id} className="relative aspect-square overflow-hidden">
-              <Image src={`https://images.unsplash.com/${id}?w=400`} alt="IRO on Instagram" fill className="object-cover hover:scale-105 transition-transform duration-500" />
-            </div>
-          ))}
         </div>
       </section>
 

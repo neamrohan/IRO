@@ -10,7 +10,7 @@ This is real, working code — every page queries Supabase directly (or through 
 
 **Storefront:** Home, Shop (with working filters: category, price, color, size, fabric, sort), Three-Piece, New Arrivals, Best Sellers, Product Details (gallery with hover-zoom, size/color/qty picker, buy now, wishlist, reviews, related products, JSON-LD SEO), Search, Cart (guest localStorage + DB sync for logged-in users, coupon validation), Checkout (BD districts, COD fully functional, bKash/Nagad/Online shown as "coming soon"), Order Success, Login/Register/Forgot/Reset Password, My Account, My Orders, Wishlist, About, Contact, FAQ, Privacy Policy, Terms, Return & Refund Policy.
 
-**Admin** (`/admin`, protected by middleware — only `role = 'admin'` profiles can access): Dashboard (live sales/order/stock stats), Product Management (list, add, edit, delete, image upload to Supabase Storage), Order Management (search, filter, status update), Customer Management, Category Management, Coupon Management, Sales Overview (6-month revenue chart + editable delivery charges).
+**Admin** (`/admin`, protected by middleware — only `role = 'admin'` profiles can access): Dashboard (live sales/order/stock stats), Product Management (list, add, edit, delete, image upload to Supabase Storage), Order Management (search, filter, status update), Customer Management, Category Management, Homepage Hero Gallery (add, replace, edit, and delete carousel photos), Coupon Management, Sales Overview (6-month revenue chart + editable delivery charges).
 
 **Backend:** Full Supabase Postgres schema with RLS on every table, triggers (auto-profile on signup, rating aggregation, order-number generator), and a seed of 6 realistic IRO products.
 
@@ -53,6 +53,7 @@ netlify.toml, .env.example
 1. Go to [supabase.com](https://supabase.com) → New Project. Note your project's **Project URL** and **anon public key** (Project Settings → API).
 2. Open the SQL Editor → New Query, paste the entire contents of `supabase/schema.sql`, and run it. This creates all tables, RLS policies, triggers, functions, and 6 seed products.
   - For an existing IRO database, run `supabase/migrations/20261002_categories_hierarchy.sql` in the SQL Editor to add category hierarchy without removing existing product assignments.
+  - For an existing IRO database, also run `supabase/migrations/20261003_hero_gallery.sql` to create and seed the editable homepage hero gallery.
 3. **Create the Storage bucket** for product images:
    - Go to Storage → New Bucket → name it exactly `product-images` → toggle **Public bucket** on.
    - Under that bucket's Policies, add a policy allowing `INSERT`/`UPDATE`/`DELETE` for authenticated users with `role = 'admin'` (or simplest for testing: allow all authenticated inserts, since the admin UI is already gated by middleware). Public `SELECT` is required so product images load on the storefront.

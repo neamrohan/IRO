@@ -21,8 +21,52 @@ export function SiteHeader({ categories }: { categories: Category[] }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
   const [mobileShopOpen, setMobileShopOpen] = useState(false);
+  const [mobileExpandedCategories, setMobileExpandedCategories] = useState<Set<string>>(() => new Set());
   const { itemCount } = useCart();
   const mainCategories = categories.filter((category) => !category.parent_id);
+
+  function renderMobileCategories(parentId: string | null, depth = 0): React.ReactNode {
+    return categories
+      .filter((category) => category.parent_id === parentId)
+      .map((category) => {
+        const children = categories.filter((item) => item.parent_id === category.id);
+        const expanded = mobileExpandedCategories.has(category.id);
+
+        return (
+          <section key={category.id}>
+            <div className="flex items-center justify-between" style={{ paddingLeft: `${depth * 12}px` }}>
+              <Link
+                href={getCategoryHref(category, categories)}
+                onClick={() => setMobileOpen(false)}
+                className={cn("block min-w-0 flex-1 py-2 text-sm", depth ? "text-ink/60" : "font-medium")}
+              >
+                {category.name}
+              </Link>
+              {children.length > 0 && (
+                <button
+                  onClick={() => setMobileExpandedCategories((current) => {
+                    const next = new Set(current);
+                    if (next.has(category.id)) next.delete(category.id);
+                    else next.add(category.id);
+                    return next;
+                  })}
+                  aria-label={`${expanded ? "Collapse" : "Expand"} ${category.name} subcategories`}
+                  aria-expanded={expanded}
+                  className="p-2 text-ink/55"
+                >
+                  <ChevronDown size={15} className={cn("transition-transform", expanded && "rotate-180")} />
+                </button>
+              )}
+            </div>
+            {expanded && children.length > 0 && (
+              <div className="border-l hairline ml-2 pl-2">
+                {renderMobileCategories(category.id, depth + 1)}
+              </div>
+            )}
+          </section>
+        );
+      });
+  }
 
   useEffect(() => {
     if (!shopOpen) return;
@@ -130,25 +174,15 @@ export function SiteHeader({ categories }: { categories: Category[] }) {
         <nav className="flex flex-col px-4 py-3">
           <div className="border-b hairline">
             <div className="flex items-center justify-between">
-              <Link href="/shop" onClick={() => setMobileOpen(false)} className="py-2.5 text-sm text-ink/85">Shop</Link>
-              <button onClick={() => setMobileShopOpen((open) => !open)} aria-label="Toggle shop categories" aria-expanded={mobileShopOpen} className="p-2 text-ink/65">
+              <button onClick={() => setMobileShopOpen((open) => !open)} aria-expanded={mobileShopOpen} className="flex flex-1 items-center justify-between py-2.5 text-left text-sm text-ink/85">
+                Shop
                 <ChevronDown size={16} className={cn("transition-transform", mobileShopOpen && "rotate-180")} />
               </button>
             </div>
             {mobileShopOpen && (
               <div className="pb-3 pl-3">
-                {mainCategories.map((category) => (
-                  <section key={category.id} className="py-2">
-                    <Link href={getCategoryHref(category, categories)} onClick={() => setMobileOpen(false)} className="block py-1.5 text-sm font-medium">
-                      {category.name}
-                    </Link>
-                    {categories.filter((child) => child.parent_id === category.id).map((child) => (
-                      <Link key={child.id} href={getCategoryHref(child, categories)} onClick={() => setMobileOpen(false)} className="block py-1.5 pl-3 text-sm text-ink/60">
-                        {child.name}
-                      </Link>
-                    ))}
-                  </section>
-                ))}
+                <Link href="/shop" onClick={() => setMobileOpen(false)} className="block border-b hairline py-2 text-sm text-ink/65">Shop All</Link>
+                {renderMobileCategories(null)}
               </div>
             )}
           </div>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import {
-  LayoutDashboard, Package, ShoppingCart, Users, FolderTree, TicketPercent, BarChart3,
+  LayoutDashboard, Package, ShoppingCart, Users, FolderTree, TicketPercent, BarChart3, Images,
 } from "lucide-react";
 
 const LINKS = [
@@ -9,6 +9,7 @@ const LINKS = [
   { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
   { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/categories", label: "Categories", icon: FolderTree },
+  { href: "/admin/hero-gallery", label: "Hero Gallery", icon: Images },
   { href: "/admin/coupons", label: "Coupons", icon: TicketPercent },
   { href: "/admin/sales", label: "Sales Overview", icon: BarChart3 },
 ];
